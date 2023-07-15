@@ -7,6 +7,7 @@ from neuroscope.config import (WEBSITE_DIR)
 from neuroscope.make_neuroscope_index_pages import (
     gen_main_index_page,
     gen_model_page,
+    get_model_config,
     make_page_file,
     make_random_redirect_2d,
 )
