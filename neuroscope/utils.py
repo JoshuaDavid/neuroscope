@@ -3,6 +3,7 @@ import einops
 import re
 import os
 from pathlib import Path
+import solu.utils as sutils
 import huggingface_hub
 import torch
 import json
