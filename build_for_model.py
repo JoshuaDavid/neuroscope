@@ -50,6 +50,6 @@ if args.model:
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "model.html"), REDIRECT_TO_INDEX)
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "random.html"), make_random_redirect_2d(cfg.n_layers, cfg.d_mlp))
     print(f"Wrote {WEBSITE_DIR}/(index|model|random).html")
-    scan_over_data(max_tokens=args.max_tokens)
+    trackers = scan_over_data(max_tokens=args.max_tokens)
     print('Finished')
 
