@@ -20,6 +20,7 @@ setup(
         "plotly",
         "ipython",
         "python-dotenv",
+        "argparse",
     ],
     packages=["neuroscope"],
 )
