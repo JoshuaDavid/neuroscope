@@ -227,6 +227,7 @@ def get_dataset_with_local_cache(dataset_name: str):
     except:
         print(f"Failed to load dataset {dataset_name} from local disk. Fetching from remote.")
         dataset_wrapper = get_dataset(dataset_name, local=False)
+        print("Got dataset {dataset_name}")
         dataset_wrapper.dataset.save_to_disk(
             os.path.join(DATA_DIR, LOCAL_DATASET_NAMES[dataset_name]))
 
