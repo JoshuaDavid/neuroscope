@@ -95,6 +95,7 @@ def scan_over_data(use_wandb=False, **cfg_kwargs):
                 if not cfg.debug:
                     if use_wandb:
                         wandb.log({"tokens": index * model.cfg.n_ctx}, step=index)
+        return trackers
     finally:
         for tracker in trackers:
             tracker.finish()
