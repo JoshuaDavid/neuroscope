@@ -88,7 +88,7 @@ def scan_over_data(use_wandb=False, **cfg_kwargs):
     try:
         with torch.autocast("cuda", torch.bfloat16):
             for index in tqdm.tqdm(range(0, cfg.max_tokens // model.cfg.n_ctx, cfg.batch_size)):  # type: ignore
-                tokens = dataset[index : index + cfg.batch_size]["tokens"].cuda()  # type: ignore
+                tokens = dataset.dataset[index : index + cfg.batch_size]["tokens"].cuda()  # type: ignore
                 logits = model(tokens).detach()
                 for tracker in trackers:
                     tracker.step(logits, tokens)
