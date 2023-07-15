@@ -35,6 +35,12 @@ parser.add_argument(
     help="Max number of tokens to run through neuroscope. -1 for entire dataset"
 )
 
+parser.add_argument('--use_head_logit_attr', type=int, default=0)
+parser.add_argument('--use_max_neuron_act', type=int, default=0)
+parser.add_argument('--use_neuron_logit_attr', type=int, default=0)
+parser.add_argument('--use_pred_log_probs', type=int, default=0)
+parser.add_argument('--use_activation_stats', type=int, default=0)
+
 args = parser.parse_args()
 
 if args.model:
@@ -50,6 +56,13 @@ if args.model:
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "model.html"), REDIRECT_TO_INDEX)
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "random.html"), make_random_redirect_2d(cfg.n_layers, cfg.d_mlp))
     print(f"Wrote {WEBSITE_DIR}/(index|model|random).html")
-    trackers = scan_over_data(max_tokens=args.max_tokens)
+    trackers = scan_over_data(
+        use_head_logit_attr=bool(args.use_head_logit_attr),
+        use_max_neuron_act=bool(args.use_max_neuron_act),
+        use_neuron_logit_attr=bool(args.use_neuron_logit_attr),
+        use_pred_log_probs=bool(args.use_pred_log_probs),
+        use_activation_stats=bool(args.use_activation_stats),
+        max_tokens=args.max_tokens
+    )
     print('Finished')
 
