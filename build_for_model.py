@@ -1,14 +1,14 @@
 import os
 import sys
 import argparse
-
-from neuroscope.config import (
-    WEBSITE_DIR,
-)
+from neuroscope.templates import (REDIRECT_TO_INDEX)
+from neuroscope.config import (WEBSITE_DIR)
 
 from neuroscope.make_neuroscope_index_pages import (
     gen_main_index_page,
+    gen_model_page,
     make_page_file,
+    make_random_redirect_2d,
 )
 
 parser = argparse.ArgumentParser(description="""
@@ -35,3 +35,9 @@ if args.model:
     main_index_path = os.path.join(WEBSITE_DIR, "index.html")
     make_page_file(main_index_path, main_index_html)
     print(f"Wrote {main_index_path}")
+    cfg = get_model_config(name)
+    model_html = gen_model_page(name)
+    make_page_file(os.path.join(folder, "index.html"), model_html)
+    make_page_file(os.path.join(folder, "model.html"), REDIRECT_TO_INDEX)
+    make_page_file(os.path.join(folder, "random.html"), make_random_redirect_2d(cfg.n_layers, cfg.d_mlp))
+    print(f"Wrote {folder}/(index|model|random).html")
