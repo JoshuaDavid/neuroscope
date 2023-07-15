@@ -26,6 +26,7 @@ from .config import (
     REPO_ROOT,
     OLD_CHECKPOINT_DIR,
     CHECKPOINT_DIR,
+    DATA_DIR,
 )
 
 def download_file_from_hf(repo_name, file_name, subfolder=".", cache_dir=CACHE_DIR):
@@ -161,6 +162,25 @@ class TokenDatasetWrapper:
     def __len__(self):
         return len(self.dataset)
 
+LOCAL_DATASET_NAMES = {
+    "c4-code": "c4_code_valid_tokens.hf",
+    "c4": "c4_valid_tokens.hf",
+    "code": "code_valid_tokens.hf",
+    "pile": "pile_big_int32.hf",
+    "pile-big": "pile_big_int32.hf",
+    "pile-big-uint16": "pile_big_int16.hf",
+    "openwebtext": "openwebtext_tokens.hf",
+}
+REMOTE_DATASET_NAMES = {
+    "c4": "NeelNanda/c4-tokenized-2b",
+    "code": "NeelNanda/code-tokenized",
+    "pile": "NeelNanda/pile-small-tokenized-2b",
+    "pile-small": "NeelNanda/pile-small-tokenized-2b",
+    "pile-big": "NeelNanda/pile-tokenized-10b",
+    "pile-big-uint16": "NeelNanda/pile-tokenized-10b",
+    "openwebtext": "NeelNanda/openwebtext-tokenized-9b",
+}
+
 @lru_cache(maxsize=None)
 def get_dataset(dataset_name: str, local=False) -> TokenDatasetWrapper:
     """Loads in one of the model datasets over which we take the max act examples. If local, loads from local folder, otherwise loads from HuggingFace Hub
@@ -187,38 +207,28 @@ def get_dataset(dataset_name: str, local=False) -> TokenDatasetWrapper:
                 print("Failed", name)
     """
     if local:
-        local_dataset_names = {
-            "c4-code": "c4_code_valid_tokens.hf",
-            "c4": "c4_valid_tokens.hf",
-            "code": "code_valid_tokens.hf",
-            "pile": "pile_big_int32.hf",
-            "pile-big": "pile_big_int32.hf",
-            "pile-big-uint16": "pile_big_int16.hf",
-            "openwebtext": "openwebtext_tokens.hf",
-        }
-        tokens = datasets.load_from_disk("/workspace/data/" + local_dataset_names[dataset_name])
+        tokens = datasets.load_from_disk(os.path.join(
+            DATA_DIR, LOCAL_DATASET_NAMES[dataset_name]))
         tokens = tokens.with_format("torch")
         return TokenDatasetWrapper(tokens)
     else:
-        remote_dataset_names = {
-            "c4": "NeelNanda/c4-tokenized-2b",
-            "code": "NeelNanda/code-tokenized",
-            "pile": "NeelNanda/pile-small-tokenized-2b",
-            "pile-small": "NeelNanda/pile-small-tokenized-2b",
-            "pile-big": "NeelNanda/pile-tokenized-10b",
-            "pile-big-uint16": "NeelNanda/pile-tokenized-10b",
-            "openwebtext": "NeelNanda/openwebtext-tokenized-9b",
-        }
         if dataset_name=="c4-code":
-            c4_data = datasets.load_dataset(remote_dataset_names["c4"], split="train")
-            code_data = datasets.load_dataset(remote_dataset_names["code"], split="train")
+            c4_data = datasets.load_dataset(REMOTE_DATASET_NAMES["c4"], split="train")
+            code_data = datasets.load_dataset(REMOTE_DATASET_NAMES["code"], split="train")
             tokens = datasets.concatenate_datasets([c4_data, code_data])
         else:
-            tokens = datasets.load_dataset(remote_dataset_names[dataset_name], split="train")
+            tokens = datasets.load_dataset(REMOTE_DATASET_NAMES[dataset_name], split="train")
         tokens = tokens.with_format("torch")
         return TokenDatasetWrapper(tokens)
 
-
+def get_dataset_with_local_cache(dataset_name: str):
+    try:
+        return get_dataset(dataset_name, local=True)
+    except:
+        print(f"Failed to load dataset {dataset_name} from local disk. Fetching from remote.")
+        dataset_wrapper = get_dataset(dataset_name, local=False)
+        dataset_wrapper.dataset.save_to_disk(
+            os.path.join(DATA_DIR, LOCAL_DATASET_NAMES[dataset_name]))
 
 class MaxStore:
     """Used to calculate max activating dataset examples - takes in batches of activations repeatedly, and tracks the top_k examples activations + indexes"""

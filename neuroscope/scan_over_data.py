@@ -12,6 +12,7 @@ from .utils import (
     HeadLogitAttr,
     NeuronLogitAttr,
     ActivationStats,
+    get_dataset_with_local_cache,
 )
 
 def scan_over_data(use_wandb=False, **cfg_kwargs):
@@ -62,7 +63,8 @@ def scan_over_data(use_wandb=False, **cfg_kwargs):
         if use_wandb:
             wandb.init(config=cfg.to_dict())
     model = HookedTransformer.from_pretrained(cfg.model_name)  # type: ignore
-    dataset = sutils.get_dataset(cfg.data_name)
+    dataset = get_dataset_with_local_cache(cfg.data_name)
+
     if len(dataset) * model.cfg.n_ctx < cfg.max_tokens or cfg.max_tokens < 0:
         print("Resetting max tokens:", cfg.max_tokens, "to", len(dataset) * model.cfg.n_ctx)
         cfg.max_tokens = len(dataset) * model.cfg.n_ctx
