@@ -2,7 +2,13 @@
 # Setup
 from neel.imports import *
 # from solu.microscope.microscope import *
-
+from .utils import (
+    model_name_to_data_name,
+    array_to_trunc_floats,
+)
+from .templates import (
+    REDIRECT_TO_INDEX
+)
 pio.renderers.default = "vscode"
 torch.set_grad_enabled(False)
 import gradio as gr
@@ -53,18 +59,7 @@ use_logits = cfg["use_logits"]
 truncated_prefix_length = cfg["truncated_prefix_length"]
 truncated_suffix_length = cfg["truncated_suffix_length"]
 
-def model_name_to_data_name(model_name):
-    if "old" in model_name or "pile" in model_name:
-        data_name = "pile"
-    elif "pythia" in model_name:
-        data_name = "pile-big"
-    elif "gpt" in model_name:
-        data_name = "openwebtext"
-    elif model_name.startswith("solu") or model_name.startswith("gelu"):
-        data_name = "c4-code"
-    else:
-        raise ValueError(f"Unknown model name: {model_name}")
-    return data_name
+
 data_name = model_name_to_data_name(model_name)
 print("Data name:", data_name)
 
@@ -168,7 +163,7 @@ print("W_logit:", W_logit.shape)
 #     return to_numpy(cache["activation"])
 
 
-def get_batch_neuron_acts(tokens, neuron_index):
+def get_batch_neuron_acts(model, tokens, neuron_index):
     """Hacky way to get out state from a single hook - we have a single element dict and edit that dict within the hook.
 
     We feed in a batch x pos batch of tokens, and get out a batch x pos tensor of activations.
@@ -198,24 +193,12 @@ def get_batch_neuron_acts(tokens, neuron_index):
 
     return cache["activation"].cpu()
 
-def array_to_trunc_floats(array: np.ndarray, decimal_places: int = 6):
-    if len(array.shape)==0:
-        return array.item()
-    elif len(array.shape)==1:
-        return [round(float(i), decimal_places) for i in array]
-    elif len(array.shape)==2:
-        return [[round(float(i), decimal_places) for i in subarray] for subarray in array]
-    elif len(array.shape)==3:
-        return [[[round(float(i), decimal_places) for i in subsubarray] for subsubarray in subarray] for subarray in array]
-    else:
-        raise ValueError(f"Invalid Array shape {array.shape}")
-
 
 
 # Test
 # For some reason, there's slight differences in the activations, but doesn't matter lol. Confusing though! Also not in a consistent direction. I wonder if it's downstream of how the tensor is stored or smth?
 if debug:
-    out = get_batch_neuron_acts(data[store.index[:, 5]]["tokens"], 5)
+    out = get_batch_neuron_acts(model, data[store.index[:, 5]]["tokens"], 5)
     print(out.shape)
     print(out.max(1).values)
     print(store.max[:, 5])
@@ -485,17 +468,6 @@ def gen_model_page(model_name):
 
 # %%
 MAKE_META_FILES = False
-
-REDIRECT_TO_INDEX = """
-<!DOCTYPE html>
-<html>
-<head>
-    <script>
-        window.location.replace("index.html");
-    </script>
-</head>
-</html>
-"""
 
 if IN_IPYTHON and MAKE_META_FILES:
     REAL_DIR = Path(f"/workspace/neuroscope/v{website_version}")

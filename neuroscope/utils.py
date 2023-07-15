@@ -42,8 +42,23 @@ def download_file_from_hf(repo_name, file_name, subfolder=".", cache_dir=CACHE_D
 
 
 # %%
+def model_name_to_data_name(model_name):
+    if "old" in model_name or "pile" in model_name:
+        data_name = "pile"
+    elif "pythia" in model_name:
+        data_name = "pile-big"
+    elif "gpt" in model_name:
+        data_name = "openwebtext"
+    elif model_name.startswith("solu") or model_name.startswith("gelu"):
+        data_name = "c4-code"
+    else:
+        raise ValueError(f"Unknown model name: {model_name}")
+    return data_name
 
+# %%
 
+def array_to_trunc_floats(array: np.ndarray, decimal_places: int = 6):
+    return array.round(decimal_places).tolist()
 
 # %%
 def push_to_hub(repo_dir):
