@@ -17,7 +17,7 @@ from IPython import get_ipython
 from transformer_lens.utils import get_corner
 from functools import lru_cache
 import transformer_lens
-from neel.imports import dataclass
+from dataclasses import dataclass
 from .config import (
     CACHE_DIR,
     REPO_ROOT,
