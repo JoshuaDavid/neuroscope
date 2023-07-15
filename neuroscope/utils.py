@@ -18,7 +18,7 @@ from typing import Tuple, Union
 from IPython import get_ipython
 from transformer_lens.utils import get_corner
 from transformer_lens import HookedTransformer
-from functools import lru_cache
+from functools import lru_cache, partial
 import transformer_lens
 from dataclasses import dataclass
 from typing import *
