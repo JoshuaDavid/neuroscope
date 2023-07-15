@@ -30,6 +30,10 @@ parser.add_argument(
     '-m', '--model', type=str,
     help="Which model to make neuroscope pages for. See --list-models for a list of supported models."
 )
+parser.add_argument(
+    None, '--max_tokens', type=int, default=-1,
+    help="Max number of tokens to run through neuroscope. -1 for entire dataset"
+)
 
 args = parser.parse_args()
 
@@ -46,6 +50,6 @@ if args.model:
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "model.html"), REDIRECT_TO_INDEX)
     make_page_file(os.path.join(WEBSITE_DIR, model_name, "random.html"), make_random_redirect_2d(cfg.n_layers, cfg.d_mlp))
     print(f"Wrote {WEBSITE_DIR}/(index|model|random).html")
-    scan_over_data()
+    scan_over_data(max_tokens=args.max_tokens)
     print('Finished')
 
