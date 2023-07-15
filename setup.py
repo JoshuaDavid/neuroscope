@@ -16,7 +16,9 @@ setup(
         "datasets",
         "wandb",
         "fancy_einsum",
-        "transformer_lens"
+        "transformer_lens",
+        "plotly",
+        "ipython",
     ],
     packages=["neuroscope"],
 )
