@@ -25,12 +25,11 @@ from functools import lru_cache
 import transformer_lens
 import pandas as pd
 
-
-website_version = 4
-MAKE_META_FILES = True
-WEBSITE_DIR = Path(f"/workspace/neuroscope/v{website_version}")
-WEBSITE_DIR.mkdir(exist_ok=True)
-
+from config import (
+    WEBSITE_VERSION,
+    MAKE_META_FILES,
+    WEBSITE_DIR,
+)
 
 # %%
 def get_num_sub_folders(path):
