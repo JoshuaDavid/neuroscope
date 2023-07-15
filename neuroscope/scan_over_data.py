@@ -22,8 +22,8 @@ def scan_over_data(use_wandb=False, **cfg_kwargs):
 
     if not IN_IPYTHON:
         print("Updating config")
-        cfg = sutils.arg_parse_update_cfg(default_cfg.to_dict())
-        cfg = Config.from_dict(cfg)
+        # cfg = sutils.arg_parse_update_cfg(default_cfg.to_dict())
+        cfg = Config.from_dict(default_cfg.to_dict())
         print(cfg)
     else:
         print("In IPython, skipping config")
