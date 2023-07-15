@@ -18,6 +18,7 @@ from transformer_lens.utils import get_corner
 from functools import lru_cache
 import transformer_lens
 from dataclasses import dataclass
+import typing
 from .config import (
     CACHE_DIR,
     REPO_ROOT,
