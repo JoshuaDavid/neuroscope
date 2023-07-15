@@ -14,7 +14,7 @@ from .utils import (
     ActivationStats,
 )
 
-def scan_over_data(**cfg_kwargs):
+def scan_over_data(use_wandb=False, **cfg_kwargs):
     torch.set_grad_enabled(False)
 
     default_cfg = Config(**cfg_kwargs)
@@ -59,7 +59,8 @@ def scan_over_data(**cfg_kwargs):
     """
 
     if not cfg.debug:
-        wandb.init(config=cfg.to_dict())
+        if use_wandb:
+            wandb.init(config=cfg.to_dict())
     model = HookedTransformer.from_pretrained(cfg.model_name)  # type: ignore
     dataset = sutils.get_dataset(cfg.data_name)
     if len(dataset) * model.cfg.n_ctx < cfg.max_tokens or cfg.max_tokens < 0:
@@ -90,9 +91,11 @@ def scan_over_data(**cfg_kwargs):
                 for tracker in trackers:
                     tracker.step(logits, tokens)
                 if not cfg.debug:
-                    wandb.log({"tokens": index * model.cfg.n_ctx}, step=index)
+                    if use_wandb:
+                        wandb.log({"tokens": index * model.cfg.n_ctx}, step=index)
     finally:
         for tracker in trackers:
             tracker.finish()
         if not cfg.debug:
-            wandb.finish()
+            if use_wandb:
+                wandb.finish()
