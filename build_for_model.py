@@ -31,7 +31,7 @@ args = parser.parse_args()
 if args.model:
     model_name = args.model
     print(f"Building for {model_name}")
-    main_index_html = gen_main_index_page(model_name)
+    main_index_html = gen_main_index_page([model_name])
     main_index_path = os.path.join(WEBSITE_DIR, "index.html")
     make_page_file(main_index_path, main_index_html)
     print(f"Wrote {main_index_path}")
