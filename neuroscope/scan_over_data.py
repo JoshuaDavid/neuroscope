@@ -1,5 +1,4 @@
 # %%
-from neel.imports import *
 import solu.utils as sutils
 from transformer_lens import HookedTransformer
 from .config import (IN_IPYTHON)
