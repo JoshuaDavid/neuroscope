@@ -23,6 +23,7 @@ setup(
         "argparse",
         "solu @ git+https://github.com/neelnanda-io/solu_project.git",
         "neel @ git+https://github.com/neelnanda-io/neelutils.git",
+        "neel_plotly @ git+https://github.com/neelnanda-io/neel-plotly.git",
     ],
     packages=["neuroscope"],
 )
