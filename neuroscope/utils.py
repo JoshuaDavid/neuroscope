@@ -230,6 +230,7 @@ def get_dataset_with_local_cache(dataset_name: str):
         print("Got dataset {dataset_name}")
         dataset_wrapper.dataset.save_to_disk(
             os.path.join(DATA_DIR, LOCAL_DATASET_NAMES[dataset_name]))
+        return dataset_wrapper
 
 class MaxStore:
     """Used to calculate max activating dataset examples - takes in batches of activations repeatedly, and tracks the top_k examples activations + indexes"""
