@@ -31,7 +31,7 @@ parser.add_argument(
     help="Which model to make neuroscope pages for. See --list-models for a list of supported models."
 )
 parser.add_argument(
-    None, '--max_tokens', type=int, default=-1,
+    '--max_tokens', type=int, default=-1,
     help="Max number of tokens to run through neuroscope. -1 for entire dataset"
 )
 
