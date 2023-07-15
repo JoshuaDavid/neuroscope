@@ -25,7 +25,7 @@ from functools import lru_cache
 import transformer_lens
 import pandas as pd
 
-from config import (
+from .config import (
     WEBSITE_VERSION,
     MAKE_META_FILES,
     WEBSITE_DIR,
