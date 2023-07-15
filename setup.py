@@ -21,8 +21,8 @@ setup(
         "ipython",
         "python-dotenv",
         "argparse",
-        "solu @ git+ssh://git@github.com/neelnanda-io/solu_project.git",
-        "neel @ git+ssh://git@github.com/neelnanda-io/neelutils.git",
+        "solu @ git+https://github.com/neelnanda-io/solu_project.git",
+        "neel @ git+https://github.com/neelnanda-io/neelutils.git",
     ],
     packages=["neuroscope"],
 )
