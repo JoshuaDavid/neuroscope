@@ -19,6 +19,7 @@ setup(
         "transformer_lens",
         "plotly",
         "ipython",
+        "python-dotenv",
     ],
     packages=["neuroscope"],
 )
