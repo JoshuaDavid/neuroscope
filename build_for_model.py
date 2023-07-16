@@ -35,11 +35,11 @@ parser.add_argument(
     help="Max number of tokens to run through neuroscope. -1 for entire dataset"
 )
 
-parser.add_argument('--use_head_logit_attr', type=int, default=0)
-parser.add_argument('--use_max_neuron_act', type=int, default=0)
-parser.add_argument('--use_neuron_logit_attr', type=int, default=0)
-parser.add_argument('--use_pred_log_probs', type=int, default=0)
-parser.add_argument('--use_activation_stats', type=int, default=0)
+parser.add_argument('--use_head_logit_attr', type=int, default=1)
+parser.add_argument('--use_max_neuron_act', type=int, default=1)
+parser.add_argument('--use_neuron_logit_attr', type=int, default=1)
+parser.add_argument('--use_pred_log_probs', type=int, default=1)
+parser.add_argument('--use_activation_stats', type=int, default=1)
 
 args = parser.parse_args()
 
